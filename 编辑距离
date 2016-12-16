@@ -1,0 +1,60 @@
+//各种操作进行比较出，最小距离的那个
+void EditDistance(const string &str_old, const string &str_new, const vector<int>&cost)
+{
+	vector<vector<int>>vec_opt(str_old.size() + 2, vector<int>(str_new.size() + 2, 9999));
+	vec_opt[0][0] = 0;
+	for (int i = 1; i <= str_new.size(); i++)
+		vec_opt[0][i] = i*cost[0];//from 0 to i; should add.
+	for (int i = 1; i <= str_old.size(); i++)
+		vec_opt[i][0] = i*cost[1];//from i to 0, should delete.
+	for (int i = 1; i <= str_old.size(); i++)
+	{
+		for (int j = 1; j <= str_new.size(); j++)
+		{
+			if (str_old[i - 1] == str_new[j - 1])
+			{
+				if (vec_opt[i - 1][j - 1] + cost[2] < vec_opt[i][j])//copy
+				{
+					vec_opt[i][j] = vec_opt[i - 1][j - 1] + cost[3];
+				}
+			}
+			else
+			{
+				if (vec_opt[i - 1][j - 1] + cost[3] < vec_opt[i][j])//replace
+				{
+					vec_opt[i][j] = vec_opt[i - 1][j - 1] + cost[3];
+				}
+			}
+			if (vec_opt[i][j + 1] + cost[0] < vec_opt[i][j])//add
+			{
+				vec_opt[i][j] = vec_opt[i][j + 1] + cost[0];
+			}
+			if (vec_opt[i + 1][j] + cost[1] < vec_opt[i][j])//delete
+			{
+				vec_opt[i][j] = vec_opt[i + 1][j] + cost[1];
+			}
+			if (i - 1 && j - 1 && str_old[i - 2] == str_new[j - 1] && str_old[i - 1] == str_new[j - 2])
+			{
+				if (vec_opt[i - 2][j - 2] + cost[4] < vec_opt[i][j])
+				{
+					vec_opt[i][j] = vec_opt[i - 2][j - 2] + cost[4];
+				}
+			}
+		}
+	}
+	int ret = vec_opt[str_old.size()][str_new.size()];
+	for (int i = 0; i < str_old.size(); i++)
+	{
+		if (vec_opt[i][str_new.size()] + cost[5] < ret)
+		{
+			ret = vec_opt[i][str_new.size()] + cost[5];
+		}
+	}
+	cout << ret << endl;
+	for (int i = 0; i < vec_opt.size(); i++)
+	{
+		for (int j = 0; j < vec_opt[0].size(); j++)
+			cout << vec_opt[i][j] << " ";
+		cout << endl;
+	}
+}
