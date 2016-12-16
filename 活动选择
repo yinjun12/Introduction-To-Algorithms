@@ -1,0 +1,19 @@
+int ActivityChoice(const vector<int>&s, const vector<int>&f)
+{//c先被全初始化为0
+	vector<vector<int>>c(s.size(), vector<int>(s.size(), 0));
+	for (int l = 2; l <= s.size()-1; l++)
+	{
+		for (int i = 1; i < l; i++)
+		{
+			for (int j = i + 1; j < l; j++)
+			{
+				if (s[j] >= f[i] && f[j] <= s[l])
+				{
+					c[i][l] = max(c[i][l], c[i][j] + c[j][l] + 1);
+				}					
+
+			}
+		}
+	}
+	return c[1][s.size() - 1]+2;
+}
