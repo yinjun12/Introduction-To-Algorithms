@@ -1,0 +1,23 @@
+TreeNode * CreateHuffmanTree(const vector<char> &vec)//创建HuffMan Tree
+{//思想：用一个deque存放指针，根据指针中的val进行排序；每次输出两个最小的结点，结点的和为根结点，两个最小结点为左右子树
+	//再把根结点放入队列；继续前面步骤！直到队列中还还剩一个
+	deque<TreeNode *>prq;
+	for (int i = 0; i < vec.size(); i++)
+	{
+		TreeNode *temp = new TreeNode(vec[i]);
+		prq.push_back(temp);
+	}
+	while (prq.size() != 1)
+	{
+		sort(prq.begin(), prq.end(), [](TreeNode *t1, TreeNode *t2){return t1->val < t2->val; });
+		TreeNode *leftTree = prq.front();
+		prq.pop_front();
+		TreeNode *rightTree = prq.front();
+		prq.pop_front();
+		TreeNode *root = new TreeNode(leftTree->val + rightTree->val-'0');
+		root->left = leftTree;
+		root->right = rightTree;
+		prq.push_back(root);	
+	}
+	return prq.front();
+}
