@@ -1,0 +1,32 @@
+void InvestmentStrategyPlan(int cap,double f1,double f2, const vector<vector<double>>&r)
+{//cap原始资金,策略不变时减去f1，变化时减去f2，r存放每年每个投资方案的回报率
+	vector<int>vec_stra(r.size() + 1,-1);//vec_stra[2]存放着第2年的策略
+    vector<double>vec_opt(r[0].size() + 1, cap);//存放每年获得的最大利润
+	for (int i = 1; i <= r.size(); i++)//year
+	{
+		for (int j = 1; j <= r[0].size(); j++)//strategy
+		{
+			int price = 0;
+			if (i == 1)
+				price = 0;
+			else if (j == vec_stra[i - 1])//如是上一年的策略，则减去f1
+			{
+				price = f1;
+			}
+			else//策略变化则减去f2
+			{
+				price = f2;
+			}
+			if (vec_opt[i - 1] * r[i - 1][j - 1] - price > vec_opt[i])
+			{
+				vec_opt[i] = vec_opt[i - 1] * r[i - 1][j - 1]-price;
+				vec_stra[i] = j-1;
+			}
+		}
+	}
+	cout << "max profit is : " << vec_opt[r.size()] << endl;
+	cout << "每年所选方案：" << endl;
+	for (int i = 1; i <= r.size(); i++)
+		cout << vec_stra[i] << " ";
+	cout << endl;
+}
