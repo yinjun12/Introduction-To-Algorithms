@@ -1,0 +1,14 @@
+int GetMaxCommonSeq(const string &a, const string &b, vector<vector<int>>&L, int al, int bl)
+{
+	if (L[al][bl] >= 0)
+		return L[al][bl];
+	if (al == 0 || bl == 0)
+		return 0;
+	if (a[al-1] == b[bl-1])
+		L[al][bl] = GetMaxCommonSeq(a, b, L, al - 1, bl - 1)+1;
+	else
+	{
+		L[al][bl] = max(GetMaxCommonSeq(a, b, L, al - 1, bl), GetMaxCommonSeq(a, b, L, al, bl - 1));
+	}
+	return L[al][bl];
+}//这是带备忘的，自底向上也是用这个递推
