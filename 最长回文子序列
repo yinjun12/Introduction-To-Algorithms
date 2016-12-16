@@ -1,0 +1,49 @@
+void MaxPalindromeSequence(const string&vec)
+{
+	vector<vector<int>>pa(vec.size()+1, vector<int>(vec.size()+1));
+	//用来存放最优解，其中pa[i][j]代表字符串中第i-1个到j-1个子串的最大回文长度
+	string str = "";//用来保存最长回文序列
+	int maxLength = 0;//用来记录最长回文序列长度
+	int row = 0, cow = 0;//row最大长度序列的起始位置,cow是结束位置
+	for (int i = 1; i <= vec.size(); i++)//对角线，即元素到本身之间的回文序列是1
+		pa[i][i] = 1;
+	for (int l = 2; l <= vec.size(); l++)//l代表长度，上面求过1的了，这里从2开始
+	{
+		for (int i = 1; i <= vec.size() - l+1; i++)//每个子串的起始
+		{
+			int j = i + l - 1;//每个子串的结束
+			if (vec[i - 1] == vec[j - 1])//若相等，则有两种情况
+			{
+				if (j == i + 1)//发生在l=2的情况
+				{
+					pa[i][j] = max(pa[i +1][j], pa[i][j - 1]) + 1;
+					/*str = vec[i - 1] + str + vec[j - 1];*/
+				}
+				else
+				{
+					pa[i][j] = max(pa[i + 1][j], pa[i][j - 1]) + 2;
+					/*if (str == "")
+						str = str + vec[(i + j - 2) / 2];
+					str = vec[i - 1] + str + vec[j - 1];*/
+				}
+				if (pa[i][j] > maxLength)//记录最大值，和最大回文时的起始和结束位置
+				{
+					maxLength = pa[i][j];
+					row = i;
+					cow = j;
+				}
+			}
+			else
+			{
+				pa[i][j] = max(pa[i + 1][j], pa[i][j - 1]);
+			}
+		}
+	}
+	str = vec.substr(row-1, cow - row+1);
+	for (int i = 0; i < str.size() / 2; i++)
+	{
+		if (count(str.begin(), str.end(), str[i]) != 2)
+			str.erase(i, 1);
+	}
+	cout << "最大长度为： " << maxLength << "字符串为： " << str << endl;
+}
