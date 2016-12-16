@@ -1,0 +1,38 @@
+void MatrixMultiple(const vector<int> &p, vector<vector<int>>&m, vector<vector<int>>&s, int start, int end)
+{
+	//思想是从底向上，先从计算所有两个相连矩阵最小运算次数，然后逐渐往上计算到6个；一个一个进行分割计算比较，计算的
+	//时候总是会用到前面计算的结果！！
+	for (int i = start; i <end-start ; i++)
+	{
+		m[i][i] = 0;
+	}
+	for (int l = 2; l <=end-start; l++)//相乘矩阵的长度
+	{
+		for (int i = 1; i < end - start - l+2; i++)//i代表相乘矩阵链开始的位置
+		{
+			int j = i+l-1;//j代表相乘矩阵结束的位置
+			m[i-1][j-1] = INT_MAX;
+			for (int k = i; k < j; k++)//k对i和j进行分割,只能切割到j的后一个位置
+			{
+				int temp = m[i-1][k-1] + m[k][j-1] + p[i-1] * p[k] * p[j];
+				if (temp < m[i-1][j-1])
+				{
+					m[i-1][j-1] = temp;
+					s[i-1][j-1] = k-1;
+				}
+			}
+		}
+	}
+}
+void VisOpera(const vector<vector<int>>&s, const vector<string>&a, int i, int j)
+{
+	if (i == j)
+		cout <<" "<< a[i]<<" ";
+	else
+	{
+		cout << "(";
+		VisOpera(s, a, i, s[i][j]);
+		VisOpera(s, a, s[i][j] + 1, j);
+		cout << ")";
+	}
+}
