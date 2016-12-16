@@ -1,0 +1,46 @@
+int GetMaxPrice(const vector<int>&price, int n)//普通递归 {}
+{
+	if (n == 0)
+		return 0;
+	int q = INT_MIN;
+	for (int i = 1; i <=n; i++)
+	{
+		q = max(q, price[i-1] + GetMaxPrice(price, n - i));//每一个子式都要递归到底进行计算，比如1，0重复计算很多次
+	}
+	return q;
+}
+int GetMaxPriceMemo(const vector<int> &price, vector<int>&r, int n)//动态规划，带备忘的自顶向下，r是用了备忘的！
+{
+	if (r[n] >= 0)//先看所求的是否是备忘里面，有就直接返回,没有再递归，这样不用对每个子式都进行递归，不用重复求解了！！
+		return r[n];
+	int q=0;
+	if (n == 0)//中间不要用return了，否则执行不了后面的r[n]=q;无法添加备忘
+	     q=0;
+	else
+		q = INT_MIN;
+	for (int i = 1; i <= n; i++)
+	{
+		q = max(q, price[i - 1] + GetMaxPriceMemo(price, r, n - i));
+		//擅于利用这个思想，将很复杂的操作，分成两个子部分，对子部分再进行分解；进行递归
+	}
+	r[n] = q;
+	return q;
+}
+int GetMaxPriceBottem(const vector<int> &price, vector<int> &r,vector<int>&s, int n)
+{
+	r[0] = 0;//r就是存放最优解的数据结构
+	for (int j = 1; j <= n; j++)//从低到上,从1到n逐步往上建立！
+	{
+		int q = INT_MIN;
+		for (int i = 1; i <= j; i++)//在逐步往上建立的过程中从左边的1开始分割
+		{
+			if ((price[i - 1] + r[j - i]) > q)
+			{
+				q = price[i - 1] + r[j - i];
+				s[j] = i;
+			}
+		}
+		r[j] = q;
+	}
+	return r[n];
+}
