@@ -1,0 +1,25 @@
+const unsigned M = 10;
+void NeatPrint(const vector<int>&l)
+{
+	int n = l.size();
+	//vec_minPrice[i]=min(vec_minPrice[k-1],Sum(k->i));1=<k<=i;
+	vector<int>vec_minPrice(n + 1, INT_MAX);//data structure that stores optimal answer.
+	vec_minPrice[0] = 0;
+	for (int i = 1; i <= n; i++)//dynamical process,from 1 to n;
+	{
+		for (int k = 1; k <= i; k++)
+		{
+			int sum = 0;
+			for (int j = k; j <= i; j++)
+				sum += l[j - 1];
+			int temp = M - i + k - sum;
+			temp = temp*temp*temp;//get the distance from question.
+			if (vec_minPrice[k - 1] + temp < vec_minPrice[i])
+			{
+				vec_minPrice[i] = vec_minPrice[k - 1] + temp;
+			}
+		}
+	}
+	cout << vec_minPrice[n] << endl;
+	cout << endl;
+}
