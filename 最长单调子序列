@@ -1,0 +1,28 @@
+void GetIncreaseSequ(vector<int>vec)
+{
+	vector<int>lst(vec.size());
+	for (int i = 0; i < vec.size(); i++)
+	{
+		int cnt = 1, minNum = vec[i];
+		for (int j = i+1; j < vec.size(); j++)
+		{
+			if (vec[j]>=minNum)
+			{
+				cnt++;
+				minNum = vec[j];
+			}
+		}
+		lst[i] = cnt;
+	}
+	vector<int>::iterator it= max_element(lst.begin(), lst.end());
+	int i = it - lst.begin();
+	int minNum = vec[i];
+	for (; i < vec.size(); i++)
+	{
+		if (vec[i] >= minNum)
+		{
+			cout << vec[i] << " ";
+			minNum = vec[i];
+		}
+	}
+}
