@@ -1,0 +1,104 @@
+//递归
+void CrossingMaxSubArray(const vector<int>&vec,int low,int mid,int high,int &left,int &right,int &max)
+{//求跨越mid的最大子数组和,low是起点,mid是跨越的中心,high是终点，left是要得到最大子数组的起点，right是要得到
+	//最大子数组的终点，max是要得到最大子数组的值
+	int left_max = INT_MIN, right_max = INT_MIN;
+	int sum = 0;
+	for (int i = mid; i >= low; i--)//左边到mid的最大连续数组之和
+	{
+		sum = sum + vec[i];
+		if (sum > left_max)
+		{
+			left_max = sum;
+			left = i;
+		}
+	}
+	sum = 0;
+	for (int j = mid + 1; j <= high; j++)//mid到右边最大连续数组之和
+	{
+		sum = sum + vec[j];
+		if (sum > right_max)
+		{
+			right_max = sum;
+			right = j;
+		}
+	}
+	max = left_max + right_max;//加起来，就是跨越mid的最大数组之和
+}
+void MaxSubArraySum(const vector<int> &vec, int low, int high, int &start, int &end, int &max)
+{//求最大子数组和的主函数
+	//low是vec起点,high是vec终点,start是结果的起点,end是结果的终点，max是结果
+	if (low == high)
+	{
+		start = low;
+		end = high;
+		max = vec[low];
+	}
+	else
+	{
+		int mid = (low + high) / 2;
+		int left_start = 0, left_end = 0, left_max = 0;
+		MaxSubArraySum(vec, low, mid, left_start, left_end, left_max);
+		int right_start = 0, right_end = 0, right_max = 0;
+		MaxSubArraySum(vec, mid + 1, high, right_start, right_end, right_max);
+		int crossing_start = 0, crossing_end = 0, crossing_max = 0;
+		CrossingMaxSubArray(vec, low, mid, high, crossing_start, crossing_end, crossing_max);
+		if (left_max >= right_max&&left_max >= crossing_max)
+		{
+			start = left_start;
+			end = left_end;
+			max = left_max;
+		}
+		else if (right_max >= left_max&&right_max >= crossing_max)
+		{
+			start = right_start;
+			end = right_end;
+			max = right_max;
+		}
+		else
+		{
+			start = crossing_start;
+			end = crossing_end;
+			max = crossing_max;
+		}
+	}
+}
+//非递归
+void GetMaxSubSum(const vector<int>&vec)//非递归！也是最大子数组求和，不过只需要o(n)，不需要递归和求出所有的情况进行比较
+{
+	int k = 0, neg_ret = vec[0], start = 0, end = 0, sub_max = INT_MIN;
+	for (; k < vec.size() && vec[k] <= 0; k++)//找到第一个大于0的,用k保存下标
+	{
+		if (vec[k] > neg_ret)
+		{
+			neg_ret = vec[k];
+			start = k;
+		}
+	}
+	if (k == vec.size() - 1)//若找不到，返回最大一个负数
+	{
+		cout << start << " : " << neg_ret;
+		return;
+	}
+	else//若找到
+	{
+		int sum = 0; start = k; int temp_start = k;
+		for (int i = k; i < vec.size(); i++)
+		{
+			sum = sum + vec[i];
+			if (sum>sub_max)//若和大于sub_max，则保存并记录其下标
+			{
+				start = temp_start;//确定临时的起点可以成为最终的起点
+				sub_max = sum;
+				end = i;
+			}
+			if (sum < 0)//若小于0，则重新开始起点，并保留重新开始的起点，但起点不一定是最终的起点，还要经过上面的判断
+			{
+				sum = 0;
+				if (i + 1 < vec.size())
+				temp_start = i+1;
+			}
+		}
+		cout << "开始：" << start << " 结束： " << end << " 最大值：" << sub_max << endl;
+	}
+}
