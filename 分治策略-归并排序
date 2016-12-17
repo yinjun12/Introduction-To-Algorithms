@@ -1,0 +1,36 @@
+//分治策略：分解，递归求解，合并，合并是重点
+void MergeSortMerge(vector<int>&A, int start, int mid, int end)//递归排序中的合并
+{//start是开始索引,end是结束索引
+	int n1 = mid - start+1;
+	int n2 = end - mid ;
+	vector<int>lVec(n1);
+	vector<int>rVec(n2);
+	copy(A.begin() + start, A.begin() + mid+1, lVec.begin());
+	lVec.push_back(INT_MAX);//哨兵
+	copy(A.begin() + mid + 1, A.begin() + end + 1, rVec.begin());
+	rVec.push_back(INT_MAX);
+	int i = 0, j = 0;
+	for (int k = start; k <= end; k++)
+	{
+		if (lVec[i] < rVec[j])
+		{
+			A[k] = lVec[i];
+			i++;
+		}
+		else
+		{
+			A[k] = rVec[j];
+			j++;
+		}
+	}
+}
+void MergeSort(vector<int>&A, int start, int end)
+{
+	if (start < end)
+	{
+		int mid = (start + end) / 2;//分解
+		MergeSort(A, start, mid);//递归,求出两个有序的子序列
+		MergeSort(A, mid + 1, end);
+		MergeSortMerge(A, start, mid, end);//合并
+	}
+}
